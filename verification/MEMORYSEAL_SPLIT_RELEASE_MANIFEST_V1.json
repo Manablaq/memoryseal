@@ -1,0 +1,124 @@
+{
+  "canonical_sources": {
+    "constructor_regression": {
+      "path": "tests/direct/test_memoryseal_bradbury_constructor_compat.py",
+      "sha256": "97dec866dcf60d0400b7bc91bcdc50873333bb2e32e7eb8cceaa4511578f6882",
+      "status": "PASS",
+      "tests": 3
+    },
+    "main": {
+      "path": "contracts/memoryseal_claim_consensus.py",
+      "sha256": "4aa0a9c1a5da486aa3c4730424212def4a95d500d9b55242000e07d8f8df892c"
+    },
+    "registry": {
+      "path": "contracts/memoryseal_registry.py",
+      "sha256": "ac7a08ac5a57636a8b8fcb100a1e1b1d37ee2a8841bee304c828472b064de90b"
+    }
+  },
+  "durable_evidence": {
+    "bradbury_finalized_main_evidence_path": "verification/MEMORYSEAL_BRADBURY_FINALIZED_MAIN_V1.json",
+    "bradbury_finalized_main_evidence_sha256": "7dace3685a3b22f6552a9cb75a3f2b0a8fdabc493872169261535e5f344a5960",
+    "stage3es_packet_index_sha256": "6e4617525a1734d4489b8f22c041443ce1205da73bfa873767b6869914a5ef35",
+    "stage3es_proof_sha256": "0a48273a763e90fff543ebb248afc61d4554a50f1fe33e080fb7c20260b587db",
+    "stage3et_result_sha256": "388232eedd279c743f6590d7cf49e22a1718563475db16bdfb94adcbb23783da",
+    "stage3et_run_index_sha256": "972c31b639651db2d689cff8b96d8c9fdf480c9bdb91a700a4aac34a6e947339",
+    "stage3ey_execution_index_sha256": "f3669a8112b2548e050df89a15484f52e128248dd762499fa2ca0922fc02387a",
+    "stage3ey_execution_result_sha256": "3275841c8493f3b5b2c29cce9c6a327448045c26aa77fb0177ca3bae1abb7b3a",
+    "stage3ez_final_index_sha256": "a549ab49af616365df4c7b295c00cee563ae995a17cbff7108a07ff03b7d8f6d",
+    "stage3ez_final_result_sha256": "9e32e2d869ba46d9934f04fe55f5ef1f9ecac210bc4ebf1138912a5560420b2a",
+    "stage3fb_finality_index_sha256": "460cb7c6b78fcdd5868930bec4d6ba6dc9bda2c9b1ed6e5cb4f305a6235475fd",
+    "stage3fb_finality_result_sha256": "4025e15b742401fb5e9155467f60df37040c55fe1fda82dc8dc98b595bfac15b"
+  },
+  "format": "memoryseal-split-release-manifest-v1",
+  "generated_at_utc": "2026-09-12T06:47:52.469836+00:00",
+  "historical_reference_regression": {
+    "evidence": "Stage 3ES durable proof",
+    "status": "PASS",
+    "tests": 274
+  },
+  "main_deployment": {
+    "corrected_address": "0x3f11F12647b1d91C39F9edDE14f7bFD0486f9f64",
+    "corrected_deployment_status": "FINALIZED",
+    "corrected_deployment_tx": "0x1ad87fe39cb422ccdd8697a0dff82db60bb73ddd210a631b7f09c38097c88386",
+    "corrected_execution_code": 1,
+    "corrected_execution_success_verified": true,
+    "corrected_finality_status": "FINALIZED",
+    "corrected_finalized_code_sha256": "4aa0a9c1a5da486aa3c4730424212def4a95d500d9b55242000e07d8f8df892c",
+    "corrected_registry_address": "0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B",
+    "corrected_registry_binding_verified": true,
+    "corrected_source_sha256": "4aa0a9c1a5da486aa3c4730424212def4a95d500d9b55242000e07d8f8df892c",
+    "deployment_authorization_consumed": true,
+    "finalize_transaction_performed_by_memoryseal_workflow": false,
+    "historical_failed_execution": "FINISHED_WITH_ERROR",
+    "historical_failed_source_sha256": "5e573668e4daff153a28da5825bb33dc9e071167224b9af08fe6906baecffd69",
+    "historical_failed_tx": "0xbd63fbf7ef8b9e95572c067d47a214a646a6477d40800435a91c78cd090b7f81",
+    "replacement_authorized": false,
+    "retry_authorized": false,
+    "second_deployment_authorized": false,
+    "single_deployment_invocation_verified": true
+  },
+  "network": {
+    "chain_id": 4221,
+    "name": "Bradbury",
+    "rpc": "https://rpc-bradbury.genlayer.com"
+  },
+  "next": "RUN_PERMANENT_RELEASE_SUITE_AND_REVIEWER_READINESS_AUDIT",
+  "permanent_composed_suite": {
+    "architecture": "REAL_REGISTRY_SUITE + STRICT_CANONICAL_WIRE_MODEL + REAL_MAIN_FRESH_PROCESS",
+    "artifacts": {
+      "tests/split_runtime/main_bradbury.py": {
+        "bytes": 57349,
+        "sha256": "68875f9a20a20ccf9838716d6dc026de4a80b5f614dd8c96c8aa641e9e2892b2"
+      },
+      "tests/split_runtime/main_claims.py": {
+        "bytes": 24351,
+        "sha256": "175609d0dd7b34c2362f0a8893b644f524b7e6753d972b754ab63f8abb32e405"
+      },
+      "tests/split_runtime/main_repair.py": {
+        "bytes": 51564,
+        "sha256": "023cb97a252f4c4288db74e44b736f7920923c05b8461c7e34da5d44a7fe9bbb"
+      },
+      "tests/split_runtime/memoryseal_split_harness.py": {
+        "bytes": 11472,
+        "sha256": "02deb029f45e9a93b6c63786f778d49dcace9b3fc72faaa751057704867b9ab1"
+      },
+      "tests/split_runtime/registry_behavior.py": {
+        "bytes": 18350,
+        "sha256": "0f0147c01739811fb5f9ec96992f35ca461b2b09387f40ec6313769e12dd4734"
+      },
+      "tests/split_runtime/registry_wire_conformance.py": {
+        "bytes": 4559,
+        "sha256": "f5685ccef44b57f4a255c8464f872368570840eeee3c8740838aa78bb2cd3ebf"
+      },
+      "verification/run_memoryseal_split_regression.sh": {
+        "bytes": 1433,
+        "sha256": "b902bbf94e6c71add470d00576ec7bcf033c698a011b6d233cfa4d31b266f7f3"
+      }
+    },
+    "distinct_mixed_semantics": 53,
+    "native_cross_contract_routing_proven": false,
+    "real_main_composed_tests": 77,
+    "real_registry_behavior_tests": 9,
+    "status": "PASS",
+    "wire_model_conformance_tests": 1
+  },
+  "registry_deployment": {
+    "address": "0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B",
+    "deployment_tx": "0x898aeb539d521f5f72aae2d92872ce0dad5716a70e3c64d4f79b9b0f74a0d160",
+    "historical_finality_status": "FINALIZED",
+    "live_recheck_in_this_stage": false,
+    "redeploy_authorized": false,
+    "source_sha256": "ac7a08ac5a57636a8b8fcb100a1e1b1d37ee2a8841bee304c828472b064de90b"
+  },
+  "release_status": "BRADBURY_SPLIT_DEPLOYMENT_FINALIZED_AND_VERIFIED",
+  "safety": {
+    "blockchain_write_performed_in_this_stage": false,
+    "contract_source_changed_in_this_stage": false,
+    "corrected_main_redeploy_authorized": false,
+    "finalization_write_performed_by_memoryseal_workflow": false,
+    "stage3dx_must_not_be_rerun": true,
+    "stage3eh_must_not_be_rerun": true,
+    "stage3ey_must_not_be_rerun": true,
+    "test_source_changed_in_this_stage": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "ctor": {
+    "params": [],
+    "kwparams": {}
+  },
+  "methods": {
+    "get_counter": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_history": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": [
+        {
+          "$rep": "string"
+        }
+      ]
+    },
+    "get_label": {
+      "params": [
+        [
+          "key",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_owner": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "set_label": {
+      "params": [
+        [
+          "key",
+          "string"
+        ],
+        [
+          "value",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    }
+  }
+}

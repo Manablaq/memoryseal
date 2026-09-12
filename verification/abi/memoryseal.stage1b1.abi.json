@@ -1,0 +1,299 @@
+{
+  "ctor": {
+    "params": [],
+    "kwparams": {}
+  },
+  "methods": {
+    "add_policy_issuer": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "issuer_address",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "add_policy_origin": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "origin",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "create_policy": {
+      "params": [
+        [
+          "slug",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ],
+        [
+          "min_evidence_records",
+          "int"
+        ],
+        [
+          "min_distinct_issuers",
+          "int"
+        ],
+        [
+          "min_distinct_origins",
+          "int"
+        ],
+        [
+          "max_evidence_age_seconds",
+          "int"
+        ],
+        [
+          "min_remaining_validity_seconds",
+          "int"
+        ],
+        [
+          "max_claim_lifetime_seconds",
+          "int"
+        ],
+        [
+          "max_evidence_records",
+          "int"
+        ],
+        [
+          "max_content_bytes",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "derive_evidence_id": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "stable_record_id",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "derive_policy_id": {
+      "params": [
+        [
+          "owner_address",
+          "string"
+        ],
+        [
+          "slug",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_evidence": {
+      "params": [
+        [
+          "evidence_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "evidence_id": "string",
+        "policy_id": "string",
+        "stable_record_id": "string",
+        "version": "int",
+        "issuer": "address",
+        "source_url": "string",
+        "publisher_origin": "string",
+        "sha256_digest": "string",
+        "issued_at": "int",
+        "expires_at": "int",
+        "registered_at": "int"
+      }
+    },
+    "get_evidence_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_latest_evidence_version": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "stable_record_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_owner": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_policy": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "policy_id": "string",
+        "owner": "address",
+        "slug": "string",
+        "version": "int",
+        "sealed": "bool",
+        "min_evidence_records": "int",
+        "min_distinct_issuers": "int",
+        "min_distinct_origins": "int",
+        "max_evidence_age_seconds": "int",
+        "min_remaining_validity_seconds": "int",
+        "max_claim_lifetime_seconds": "int",
+        "max_evidence_records": "int",
+        "max_content_bytes": "int",
+        "issuer_count": "int",
+        "origin_count": "int",
+        "last_issuer": "string",
+        "last_origin": "string",
+        "base_commitment": "string",
+        "issuer_commitment": "string",
+        "origin_commitment": "string",
+        "fingerprint": "string",
+        "created_at": "int",
+        "sealed_at": "int"
+      }
+    },
+    "get_policy_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "is_policy_issuer": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "issuer_address",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "bool"
+    },
+    "is_policy_origin": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "origin",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "bool"
+    },
+    "register_evidence": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "stable_record_id",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ],
+        [
+          "source_url",
+          "string"
+        ],
+        [
+          "publisher_origin",
+          "string"
+        ],
+        [
+          "sha256_digest",
+          "string"
+        ],
+        [
+          "issued_at",
+          "int"
+        ],
+        [
+          "expires_at",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "seal_policy": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    }
+  }
+}

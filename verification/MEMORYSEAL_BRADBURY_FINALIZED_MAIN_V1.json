@@ -1,0 +1,76 @@
+{
+  "evidence_id": "memoryseal-bradbury-finalized-main-v1-20260912T064752Z-b009b5ef2fb7",
+  "format": "memoryseal-bradbury-finalized-main-evidence-v1",
+  "main": {
+    "address": "0x3f11F12647b1d91C39F9edDE14f7bFD0486f9f64",
+    "constructor_binding": {
+      "expected_registry": "0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B",
+      "final_bound_observation_block": 21499259,
+      "method": "get_registry",
+      "returned_registry": "0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B",
+      "verified": true
+    },
+    "deployment_tx": "0x1ad87fe39cb422ccdd8697a0dff82db60bb73ddd210a631b7f09c38097c88386",
+    "execution": {
+      "deployment_authorization_consumed": true,
+      "execution_code": 1,
+      "replacement_performed": false,
+      "retry_or_rebroadcast_performed": false,
+      "single_deployment_invocation_verified": true,
+      "success_verified": true
+    },
+    "finality": {
+      "finalized_code_sha256": "4aa0a9c1a5da486aa3c4730424212def4a95d500d9b55242000e07d8f8df892c",
+      "first_bound_finalized_observation_block": 21499166,
+      "first_bound_finalized_observation_timestamp_unix": 1789194636,
+      "first_bound_finalized_observation_timestamp_utc": "2026-09-12T06:30:36+00:00",
+      "stored_status": "Finalized",
+      "stored_status_code": 7,
+      "verified": true
+    },
+    "source_sha256": "4aa0a9c1a5da486aa3c4730424212def4a95d500d9b55242000e07d8f8df892c"
+  },
+  "network": {
+    "chain_id": 4221,
+    "consensus_data": "0x85D7bf947A512Fc640C75327A780c90847267697",
+    "consensus_main": "0x0112Bf6e83497965A5fdD6Dad1E447a6E004271D",
+    "consensus_source_commit": "9c686087963551277fc2dce0354c2b1a7050b4b2",
+    "name": "Bradbury",
+    "network_artifact_commit": "f9a30ed9536e56255cd2d7f8579a4d5dcc81ffd0",
+    "network_version": "v0.5:9c68608",
+    "rpc": "https://rpc-bradbury.genlayer.com"
+  },
+  "proof_artifacts": {
+    "stage3ey_execution_index_sha256": "f3669a8112b2548e050df89a15484f52e128248dd762499fa2ca0922fc02387a",
+    "stage3ey_execution_result_sha256": "3275841c8493f3b5b2c29cce9c6a327448045c26aa77fb0177ca3bae1abb7b3a",
+    "stage3ez_final_index_sha256": "a549ab49af616365df4c7b295c00cee563ae995a17cbff7108a07ff03b7d8f6d",
+    "stage3ez_final_result_sha256": "9e32e2d869ba46d9934f04fe55f5ef1f9ecac210bc4ebf1138912a5560420b2a",
+    "stage3fb_finality_index_sha256": "460cb7c6b78fcdd5868930bec4d6ba6dc9bda2c9b1ed6e5cb4f305a6235475fd",
+    "stage3fb_finality_result_sha256": "4025e15b742401fb5e9155467f60df37040c55fe1fda82dc8dc98b595bfac15b",
+    "stage3fc_index_sha256": "1598663425083b1c313032ce009f64c031c11976df548e586f33bd53c74b5c54",
+    "stage3fc_recording_plan_sha256": "182c2e49492eafd58f90e76be8b8479c96b7611689ae59ffffebbdfe95061971",
+    "stage3fd_index_sha256": "7da71a36b8f3d01426fe5b123043cb1736a2a84a9fe5e1ffb95025148d660b3b",
+    "stage3fd_schema_capture_result_sha256": "3c6aedc4f9ea442dcb795b771ceff75d0f4a67cddaaa0336e23ca0c0c9788f96"
+  },
+  "publication": {
+    "append_only": true,
+    "expires_at_utc": null,
+    "expiry_policy": "NO_EXPIRY_FOR_IMMUTABLE_FINALIZED_DEPLOYMENT_ATTESTATION",
+    "recorded_at_utc": "2026-09-12T06:47:52.469836+00:00",
+    "scope": "Exact finalized deployment code identity, deployment transaction identity, and finalized constructor Registry binding."
+  },
+  "registry": {
+    "address": "0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B",
+    "deployment_tx": "0x898aeb539d521f5f72aae2d92872ce0dad5716a70e3c64d4f79b9b0f74a0d160",
+    "finality_status": "FINALIZED",
+    "source_sha256": "ac7a08ac5a57636a8b8fcb100a1e1b1d37ee2a8841bee304c828472b064de90b"
+  },
+  "safety": {
+    "blockchain_write_performed_by_recording_stage": false,
+    "contract_source_changed_by_recording_stage": false,
+    "corrected_main_redeploy_authorized": false,
+    "finalize_transaction_performed_by_memoryseal_workflow": false,
+    "stage3ey_must_not_be_rerun": true,
+    "test_source_changed_by_recording_stage": false
+  }
+}

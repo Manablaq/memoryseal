@@ -1,0 +1,491 @@
+{
+  "ctor": {
+    "params": [],
+    "kwparams": {}
+  },
+  "methods": {
+    "add_policy_issuer": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "issuer_address",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "add_policy_origin": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "origin",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "cancel_claim": {
+      "params": [
+        [
+          "claim_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "create_policy": {
+      "params": [
+        [
+          "slug",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ],
+        [
+          "min_evidence_records",
+          "int"
+        ],
+        [
+          "min_distinct_issuers",
+          "int"
+        ],
+        [
+          "min_distinct_origins",
+          "int"
+        ],
+        [
+          "max_evidence_age_seconds",
+          "int"
+        ],
+        [
+          "min_remaining_validity_seconds",
+          "int"
+        ],
+        [
+          "max_claim_lifetime_seconds",
+          "int"
+        ],
+        [
+          "max_evidence_records",
+          "int"
+        ],
+        [
+          "max_content_bytes",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "derive_evidence_id": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "stable_record_id",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "derive_policy_id": {
+      "params": [
+        [
+          "owner_address",
+          "string"
+        ],
+        [
+          "slug",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "expire_claim": {
+      "params": [
+        [
+          "claim_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "null",
+      "payable": false
+    },
+    "get_claim": {
+      "params": [
+        [
+          "claim_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "claim_id": "string",
+        "sequence": "int",
+        "subject_id": "string",
+        "claim_text": "string",
+        "claim_hash": "string",
+        "policy_id": "string",
+        "policy_fingerprint": "string",
+        "proposer": "address",
+        "evidence_count": "int",
+        "source_set_digest": "string",
+        "evidence_expires_at": "int",
+        "supersedes_claim_id": "string",
+        "repairs_claim_id": "string",
+        "repair_child_claim_id": "string",
+        "superseded_by_claim_id": "string",
+        "state": "string",
+        "reason_code": "string",
+        "repair_evidence_id": "string",
+        "created_at": "int",
+        "review_deadline": "int",
+        "reviewed_at": "int",
+        "valid_until": "int",
+        "state_changed_at": "int"
+      }
+    },
+    "get_claim_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_claim_evidence_id": {
+      "params": [
+        [
+          "claim_id",
+          "string"
+        ],
+        [
+          "index",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_evidence": {
+      "params": [
+        [
+          "evidence_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "evidence_id": "string",
+        "policy_id": "string",
+        "stable_record_id": "string",
+        "version": "int",
+        "issuer": "address",
+        "source_url": "string",
+        "publisher_origin": "string",
+        "sha256_digest": "string",
+        "issued_at": "int",
+        "expires_at": "int",
+        "registered_at": "int"
+      }
+    },
+    "get_evidence_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_latest_evidence_version": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "stable_record_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_owner": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_policy": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "policy_id": "string",
+        "owner": "address",
+        "slug": "string",
+        "version": "int",
+        "sealed": "bool",
+        "min_evidence_records": "int",
+        "min_distinct_issuers": "int",
+        "min_distinct_origins": "int",
+        "max_evidence_age_seconds": "int",
+        "min_remaining_validity_seconds": "int",
+        "max_claim_lifetime_seconds": "int",
+        "max_evidence_records": "int",
+        "max_content_bytes": "int",
+        "issuer_count": "int",
+        "origin_count": "int",
+        "last_issuer": "string",
+        "last_origin": "string",
+        "base_commitment": "string",
+        "issuer_commitment": "string",
+        "origin_commitment": "string",
+        "fingerprint": "string",
+        "created_at": "int",
+        "sealed_at": "int"
+      }
+    },
+    "get_policy_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_recorded_subject_head": {
+      "params": [
+        [
+          "subject_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_subject_head": {
+      "params": [
+        [
+          "subject_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_subject_history_claim_id": {
+      "params": [
+        [
+          "subject_id",
+          "string"
+        ],
+        [
+          "index",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_subject_history_count": {
+      "params": [
+        [
+          "subject_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "is_policy_issuer": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "issuer_address",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "bool"
+    },
+    "is_policy_origin": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "origin",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "bool"
+    },
+    "propose_claim": {
+      "params": [
+        [
+          "subject_id",
+          "string"
+        ],
+        [
+          "claim_text",
+          "string"
+        ],
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "evidence_ids",
+          [
+            {
+              "$rep": "string"
+            }
+          ]
+        ],
+        [
+          "supersedes_claim_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "propose_repair_claim": {
+      "params": [
+        [
+          "parent_claim_id",
+          "string"
+        ],
+        [
+          "evidence_ids",
+          [
+            {
+              "$rep": "string"
+            }
+          ]
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "register_evidence": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ],
+        [
+          "stable_record_id",
+          "string"
+        ],
+        [
+          "version",
+          "int"
+        ],
+        [
+          "source_url",
+          "string"
+        ],
+        [
+          "publisher_origin",
+          "string"
+        ],
+        [
+          "sha256_digest",
+          "string"
+        ],
+        [
+          "issued_at",
+          "int"
+        ],
+        [
+          "expires_at",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "review_claim": {
+      "params": [
+        [
+          "claim_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "seal_policy": {
+      "params": [
+        [
+          "policy_id",
+          "string"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    }
+  }
+}
