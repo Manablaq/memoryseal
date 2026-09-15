@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useState, useSyncExternalStore, type FormEvent } from "react";
 
 import {
   connectMemorySealWallet,
@@ -8,6 +8,11 @@ import {
   parseMemorySealTransactionHash,
   type MemorySealWalletSession,
 } from "../lib/memoryseal/browser-wallet";
+import {
+  getMemorySealPendingTransactionHash,
+  getMemorySealPendingTransactionServerHash,
+  subscribeMemorySealPendingTransaction,
+} from "../lib/memoryseal/tx-journal";
 import {
   resumeMemorySealFinalization,
   submitAndTrackMemorySealIntent,
@@ -35,7 +40,17 @@ export function TransactionPanel() {
     INITIAL_MEMORYSEAL_TRANSACTION_STATE,
   );
   const [formError, setFormError] = useState("");
-  const [recoveryHash, setRecoveryHash] = useState("");
+  const [recoveryHashOverride, setRecoveryHash] =
+    useState<string | null>(null);
+
+  const recordedRecoveryHash = useSyncExternalStore(
+    subscribeMemorySealPendingTransaction,
+    getMemorySealPendingTransactionHash,
+    getMemorySealPendingTransactionServerHash,
+  );
+
+  const recoveryHash =
+    recoveryHashOverride ?? recordedRecoveryHash;
 
   const form = MEMORYSEAL_WRITE_FORMS[action];
 
@@ -309,8 +324,9 @@ export function TransactionPanel() {
             <strong>Resume an existing transaction</strong>
             <p>
               Use the recorded GenLayer transaction hash after a page reload or
-              ambiguous RPC interruption. This tracker never resubmits the
-              underlying write.
+              ambiguous RPC interruption. If this browser recorded a submitted
+              transaction, its hash is restored here automatically. This tracker
+              never resubmits the underlying write.
             </p>
             <div className={styles.recoveryControl}>
               <input

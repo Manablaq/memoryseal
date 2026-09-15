@@ -13,6 +13,11 @@ import type {
 } from "./transaction-runner";
 import type { MemorySealTransactionSnapshot } from "./tx-state";
 
+import {
+  clearMemorySealPendingTransaction,
+  recordMemorySealPendingTransaction,
+} from "./tx-journal";
+
 export interface MemorySealEip1193Provider {
   request(args: {
     method: string;
@@ -74,6 +79,40 @@ export function parseMemorySealTransactionHash(
   return value as TransactionHash;
 }
 
+export const MEMORYSEAL_DECISION_TRACKING_TIMEOUT_MS =
+  15 * 60 * 1_000;
+
+export const MEMORYSEAL_FINALIZATION_TRACKING_TIMEOUT_MS =
+  60 * 60 * 1_000;
+
+const withMemorySealTrackingTimeout = async <T>(
+  operation: Promise<T>,
+  timeoutMs: number,
+  stage: string,
+): Promise<T> =>
+  new Promise<T>((resolve, reject) => {
+    const timer = globalThis.setTimeout(() => {
+      reject(
+        new Error(
+          `Timed out while tracking MemorySeal ${stage}. ` +
+            "The transaction may still be progressing. " +
+            "Do not resubmit it; resume tracking with the recorded transaction hash.",
+        ),
+      );
+    }, timeoutMs);
+
+    operation.then(
+      (value) => {
+        globalThis.clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        globalThis.clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+
 const snapshot = (receipt: {
   statusName?: unknown;
   txExecutionResultName?: unknown;
@@ -125,27 +164,43 @@ export async function connectMemorySealWallet(
         throw new Error("Write intent target is outside the frozen MemorySeal deployment.");
       }
 
-      return client.writeContract({
+      const hash = await client.writeContract({
         address: intent.address,
         functionName: intent.functionName,
         args: [...intent.args] as never[],
         value: intent.value,
       });
+
+      recordMemorySealPendingTransaction(hash);
+
+      return hash;
     },
 
     async waitForDecision(hash) {
-      const receipt = await client.waitForTransactionReceipt({
-        hash,
-        status: TransactionStatus.ACCEPTED,
-      });
+      const receipt = await withMemorySealTrackingTimeout(
+        client.waitForTransactionReceipt({
+          hash,
+          status: TransactionStatus.ACCEPTED,
+        }),
+        MEMORYSEAL_DECISION_TRACKING_TIMEOUT_MS,
+        "consensus decision",
+      );
+
       return snapshot(receipt);
     },
 
     async waitForFinalization(hash) {
-      const receipt = await client.waitForTransactionReceipt({
-        hash,
-        status: TransactionStatus.FINALIZED,
-      });
+      const receipt = await withMemorySealTrackingTimeout(
+        client.waitForTransactionReceipt({
+          hash,
+          status: TransactionStatus.FINALIZED,
+        }),
+        MEMORYSEAL_FINALIZATION_TRACKING_TIMEOUT_MS,
+        "stored finality",
+      );
+
+      clearMemorySealPendingTransaction(hash);
+
       return snapshot(receipt);
     },
   };
@@ -163,10 +218,17 @@ export function createMemorySealFinalizationTracker(): MemorySealFinalizationTra
 
   return {
     async waitForFinalization(hash) {
-      const receipt = await client.waitForTransactionReceipt({
-        hash,
-        status: TransactionStatus.FINALIZED,
-      });
+      const receipt = await withMemorySealTrackingTimeout(
+        client.waitForTransactionReceipt({
+          hash,
+          status: TransactionStatus.FINALIZED,
+        }),
+        MEMORYSEAL_FINALIZATION_TRACKING_TIMEOUT_MS,
+        "stored finality",
+      );
+
+      clearMemorySealPendingTransaction(hash);
+
       return snapshot(receipt);
     },
   };

@@ -13,3 +13,6 @@ coverage/
 .next/
 node_modules/
 dist/
+
+# Local Vercel project metadata
+.vercel/
