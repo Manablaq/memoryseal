@@ -52,6 +52,8 @@ export function TransactionPanel() {
   const recoveryHash =
     recoveryHashOverride ?? recordedRecoveryHash;
 
+  const hasRecordedPendingTransaction = recordedRecoveryHash.length > 0;
+
   const form = MEMORYSEAL_WRITE_FORMS[action];
 
   const busy = useMemo(
@@ -96,6 +98,14 @@ export function TransactionPanel() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError("");
+
+    if (hasRecordedPendingTransaction) {
+      setFormError(
+        "A recorded transaction is still pending. Resume finalization by its " +
+          "recorded hash before submitting another write.",
+      );
+      return;
+    }
 
     if (!session) {
       setFormError("Connect a browser wallet on Bradbury before submitting.");
@@ -257,7 +267,7 @@ export function TransactionPanel() {
               <button
                 className="button button--primary"
                 type="submit"
-                disabled={busy || !session}
+                disabled={busy || !session || hasRecordedPendingTransaction}
               >
                 Review in wallet
               </button>
@@ -265,6 +275,13 @@ export function TransactionPanel() {
           </form>
 
           {formError ? <p className={styles.error}>{formError}</p> : null}
+
+          {hasRecordedPendingTransaction ? (
+            <p className={styles.warning}>
+              A recorded transaction is still pending. New write submission is
+              locked until you resume finalization by the recorded hash below.
+            </p>
+          ) : null}
 
           <div className={styles.status} aria-live="polite">
             <div className={styles.statusTop}>
