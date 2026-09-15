@@ -14,5 +14,13 @@ coverage/
 node_modules/
 dist/
 
+# Browser test / local report output
+test-results/
+playwright-report/
+blob-report/
+
+# Local logs
+*.log
+
 # Local Vercel project metadata
 .vercel/
