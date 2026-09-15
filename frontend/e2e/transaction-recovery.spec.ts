@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const pendingHash =
   "0xabababababababababababababababababababababababababababababababab";
 const walletAddress = "0x1212121212121212121212121212121212121212";
-const storageKey = "memoryseal.pending-transaction.v1";
+const storageKey = "memoryseal.pending-transaction.v2";
 const seedKey = "memoryseal.e2e.pending-seeded";
 
 type WalletProbeWindow = typeof window & {
@@ -32,9 +32,14 @@ const installPendingTransactionFixture = async (page: Page) => {
         window.localStorage.setItem(
           storageKey,
           JSON.stringify({
-            version: 1,
+            version: 2,
             txHash: pendingHash,
             recordedAt: "2026-09-15T00:00:00.000Z",
+            chainId: 4221,
+            account: walletAddress,
+            contractAddress:
+              "0x3f11F12647b1d91C39F9edDE14f7bFD0486f9f64",
+            functionName: "review_claim",
           }),
         );
         window.sessionStorage.setItem(seedKey, "1");
@@ -192,5 +197,34 @@ test.describe("MemorySeal durable transaction recovery", () => {
 
     await page.waitForTimeout(250);
     expect(await walletRequests(page)).toEqual([]);
+  });
+
+  test("warns when connected wallet differs from the bound recovery account", async ({ page }) => {
+    await page.goto("/app");
+    await page.evaluate((key) => {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) throw new Error("missing pending fixture");
+      const parsed = JSON.parse(raw) as { account?: string };
+      parsed.account = "0x3434343434343434343434343434343434343434";
+      window.localStorage.setItem(key, JSON.stringify(parsed));
+    }, storageKey);
+    await page.reload();
+    await page.getByRole("button", { name: "Connect wallet" }).click();
+    await expect(page.getByText(/submitted by a different wallet account/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Review in wallet" })).toBeDisabled();
+  });
+
+  test("fails closed on a pending journal bound to the wrong chain", async ({ page }) => {
+    await page.goto("/app");
+    await page.evaluate((key) => {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) throw new Error("missing pending fixture");
+      const parsed = JSON.parse(raw) as { chainId?: number };
+      parsed.chainId = 1;
+      window.localStorage.setItem(key, JSON.stringify(parsed));
+    }, storageKey);
+    await page.reload();
+    await expect(page.locator('input[placeholder*="transaction hash"]')).toHaveValue("");
+    await expect(page.getByText(/A recorded transaction is still pending/i)).toHaveCount(0);
   });
 });

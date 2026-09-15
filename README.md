@@ -16,6 +16,18 @@ MemorySeal prevents an agent from making a fact trusted merely by writing it. Cl
 - Production frontend: https://memoryseal-umber.vercel.app
 - Canonical Bradbury reads use `TransactionHashVariant.LATEST_FINAL`. The public UI must not present a non-final transaction variant as canonical protocol state.
 
+## Hardening
+
+- Canonical deployed Main: `contracts/memoryseal_claim_consensus.py`.
+- Canonical deployed Registry: `contracts/memoryseal_registry.py`.
+- Other candidate/monolithic/probe contract files are explicitly historical and non-canonical.
+- Browser writes verify Bradbury chain ID `4221` and journal submitted transactions with chain, wallet, contract, method, and timestamp context.
+- Production responses use defense-in-depth security headers.
+- CI includes production dependency auditing and expanded browser recovery tests.
+- Scheduled monitoring checks the public production routes and Bradbury chain identity.
+
+See [`SECURITY.md`](SECURITY.md).
+
 ## License
 
 MemorySeal is licensed under the Apache License, Version 2.0 (`Apache-2.0`). See [`LICENSE`](LICENSE).

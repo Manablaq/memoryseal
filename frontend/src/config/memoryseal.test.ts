@@ -33,10 +33,10 @@ describe("frozen MemorySeal Bradbury deployment configuration", () => {
   });
 
   it("binds the exact canonical Step 3 release", () => {
-    expect(MEMORYSEAL_DEPLOYMENT.release.canonicalCommitSha).toBe(
+    expect(MEMORYSEAL_DEPLOYMENT.release.contractCommitSha).toBe(
       "0bdd8a6f0ffb4b6357d313eff0a3a4ed6704a8cb",
     );
-    expect(MEMORYSEAL_DEPLOYMENT.release.canonicalTreeSha).toBe(
+    expect(MEMORYSEAL_DEPLOYMENT.release.contractTreeSha).toBe(
       "32958bde41c4927d1302f5f77c6792f447ab9a92",
     );
     expect(MEMORYSEAL_DEPLOYMENT.release.mainSourceSha256).toBe(

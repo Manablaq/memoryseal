@@ -9,6 +9,7 @@ import {
   type MemorySealWalletSession,
 } from "../lib/memoryseal/browser-wallet";
 import {
+  getMemorySealPendingTransactionContextIssue,
   getMemorySealPendingTransactionHash,
   getMemorySealPendingTransactionServerHash,
   subscribeMemorySealPendingTransaction,
@@ -40,6 +41,8 @@ export function TransactionPanel() {
     INITIAL_MEMORYSEAL_TRANSACTION_STATE,
   );
   const [formError, setFormError] = useState("");
+  const [recoveryContextWarning, setRecoveryContextWarning] = useState("");
+  const [copyStatus, setCopyStatus] = useState("");
   const [recoveryHashOverride, setRecoveryHash] =
     useState<string | null>(null);
 
@@ -79,6 +82,9 @@ export function TransactionPanel() {
       setState({ phase: "switching_network" });
       const connected = await connectMemorySealWallet();
       setSession(connected);
+      setRecoveryContextWarning(
+        getMemorySealPendingTransactionContextIssue(connected.address) ?? "",
+      );
       setState({ phase: "ready" });
     } catch (error) {
       setSession(null);
@@ -138,6 +144,21 @@ export function TransactionPanel() {
         createMemorySealFinalizationTracker(),
         setState,
       );
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async function copyRecoveryHash() {
+    setFormError("");
+    setCopyStatus("");
+    try {
+      const hash = parseMemorySealTransactionHash(recoveryHash.trim());
+      if (!navigator.clipboard?.writeText) {
+        throw new Error("Clipboard access is unavailable. Copy the recovery hash manually.");
+      }
+      await navigator.clipboard.writeText(hash);
+      setCopyStatus("Recovery hash copied. It can be used on another browser or device.");
     } catch (error) {
       setFormError(error instanceof Error ? error.message : String(error));
     }
@@ -283,6 +304,10 @@ export function TransactionPanel() {
             </p>
           ) : null}
 
+          {recoveryContextWarning ? (
+            <p className={styles.warning}>{recoveryContextWarning}</p>
+          ) : null}
+
           <div className={styles.status} aria-live="polite">
             <div className={styles.statusTop}>
               <div>
@@ -341,18 +366,30 @@ export function TransactionPanel() {
             <strong>Resume an existing transaction</strong>
             <p>
               Use the recorded GenLayer transaction hash after a page reload or
-              ambiguous RPC interruption. If this browser recorded a submitted
-              transaction, its hash is restored here automatically. This tracker
-              never resubmits the underlying write.
+              ambiguous RPC interruption. New records are bound to Bradbury, the
+              submitting wallet, canonical contract, and exact write method. Copy
+              the hash for another browser or device. This tracker never resubmits
+              the underlying write.
             </p>
             <div className={styles.recoveryControl}>
               <input
                 value={recoveryHash}
-                onChange={(event) => setRecoveryHash(event.target.value)}
+                onChange={(event) => {
+                  setRecoveryHash(event.target.value);
+                  setCopyStatus("");
+                }}
                 placeholder="0x… transaction hash"
                 spellCheck={false}
                 disabled={busy}
               />
+              <button
+                className="button button--quiet"
+                type="button"
+                disabled={busy || recoveryHash.trim().length === 0}
+                onClick={() => void copyRecoveryHash()}
+              >
+                Copy recovery hash
+              </button>
               <button
                 className="button button--quiet"
                 type="submit"
@@ -361,6 +398,7 @@ export function TransactionPanel() {
                 Resume finalization
               </button>
             </div>
+            {copyStatus ? <p>{copyStatus}</p> : null}
           </form>
         </div>
       </div>

@@ -1,0 +1,31 @@
+name: Production monitor
+
+on:
+  schedule:
+    - cron: "17,47 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check public MemorySeal routes
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 2 https://memoryseal-umber.vercel.app/ | grep -q "MemorySeal"
+          curl --fail --silent --show-error --location --retry 2 https://memoryseal-umber.vercel.app/app | grep -q "MemorySeal"
+      - name: Check Bradbury chain identity
+        run: |
+          set -euo pipefail
+          RESPONSE="$(curl --fail --silent --show-error --retry 2 -H 'content-type: application/json' --data '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}' https://rpc-bradbury.genlayer.com)"
+          python3 - "$RESPONSE" <<'PY'
+          import json,sys
+          payload=json.loads(sys.argv[1])
+          if payload.get('result','').lower() != '0x107d':
+              raise SystemExit('Bradbury chain identity mismatch: '+repr(payload))
+          print('BRADBURY_CHAIN_ID=4221')
+          PY

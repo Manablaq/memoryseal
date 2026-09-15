@@ -1,16 +1,15 @@
 # MemorySeal frontend
 
-This directory is the certified frontend foundation for MemorySeal Step 4.
+This is the public frontend for the finalized MemorySeal Bradbury deployment.
 
-Stage 4D establishes only:
+- Durable reads use `TransactionHashVariant.LATEST_FINAL` where finality is consequential.
+- Browser writes are restricted to the ten frozen methods and canonical Main/Registry addresses.
+- Wallet sessions are verified against Bradbury chain ID `4221`.
+- Pending journal v2 binds transaction hash, chain, wallet, contract, method, and timestamp.
+- Legacy hash-only recovery remains supported without inventing missing context.
+- Recovery tracking never automatically resubmits a write; users can copy a recovery hash for another browser/device.
+- Response headers provide CSP, clickjacking, MIME-sniffing, referrer, permissions, and HSTS hardening.
+- CI runs lint, typecheck, tests, build, production dependency audit, and Chromium E2E.
+- A scheduled workflow monitors the production routes and Bradbury chain identity.
 
-- the pinned Next.js/React/GenLayerJS toolchain;
-- the exact Bradbury chain and finalized MemorySeal deployment identities;
-- deterministic lint, typecheck, unit-test, and production-build foundations;
-- the boundary that no global protocol lists may be invented from count-only reads.
-
-Product UI, typed protocol client logic, live Bradbury reads, wallet writes, and browser
-E2E are implemented and certified in later Step 4 stages.
-
-The Intelligent Contracts are frozen by the completed Step 3 release and are not
-modified or redeployed by frontend work.
+The finalized Intelligent Contract sources are not modified by frontend hardening. See `../contracts/README.md` and `../verification/MEMORYSEAL_BRADBURY_FINALIZED_MAIN_V1.json`.

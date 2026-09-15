@@ -79,6 +79,20 @@ export function parseMemorySealTransactionHash(
   return value as TransactionHash;
 }
 
+export function assertMemorySealWalletChainId(value: unknown): void {
+  let chainId: number | null = null;
+  if (typeof value === "string" && /^0x[0-9a-fA-F]+$/.test(value)) {
+    chainId = Number.parseInt(value.slice(2), 16);
+  } else if (typeof value === "number" && Number.isSafeInteger(value)) {
+    chainId = value;
+  } else if (typeof value === "bigint" && value <= BigInt(Number.MAX_SAFE_INTEGER)) {
+    chainId = Number(value);
+  }
+  if (chainId !== MEMORYSEAL_DEPLOYMENT.network.chainId) {
+    throw new Error("Wallet is not connected to the exact Bradbury chain ID 4221.");
+  }
+}
+
 export const MEMORYSEAL_DECISION_TRACKING_TIMEOUT_MS =
   15 * 60 * 1_000;
 
@@ -155,6 +169,10 @@ export async function connectMemorySealWallet(
 
   await client.connect("testnetBradbury");
 
+  assertMemorySealWalletChainId(
+    await provider.request({ method: "eth_chainId" }),
+  );
+
   const transport: MemorySealWriteTransport = {
     async submit(intent: MemorySealWriteIntent) {
       if (
@@ -171,7 +189,12 @@ export async function connectMemorySealWallet(
         value: intent.value,
       });
 
-      recordMemorySealPendingTransaction(hash);
+      recordMemorySealPendingTransaction(hash, {
+        chainId: MEMORYSEAL_DEPLOYMENT.network.chainId,
+        account: address,
+        contractAddress: intent.address,
+        functionName: intent.functionName,
+      });
 
       return hash;
     },
