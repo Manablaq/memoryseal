@@ -9,7 +9,7 @@
 
 MemorySeal prevents a claim from becoming trusted merely because an agent wrote it. A claim can advance canonical subject memory only when it is bound to a sealed trust policy, versioned evidence, independent provenance requirements, freshness constraints, and a finalized protocol outcome.
 
-> **Release status:** production verified on GenLayer Bradbury testnet. The current runtime release is anchored to commit `aef280f787187d8ccc65728ab8603aa69fdd162c`; the canonical deployed Intelligent Contract source bytes were not changed by the frontend/release hardening work.
+> **Release status:** production verified on GenLayer Bradbury testnet. The current frontend runtime is the 19 September 2026 wallet-fix release at merge commit `bdaa4cfffecd3f9600a90806b8f58a21defff1e8`; the canonical deployed Intelligent Contract source bytes were not changed or redeployed.
 
 ## Live release
 
@@ -19,9 +19,14 @@ MemorySeal prevents a claim from becoming trusted merely because an agent wrote 
 | Network | GenLayer Bradbury testnet — chain ID `4221` |
 | Main contract | `0x3f11F12647b1d91C39F9edDE14f7bFD0486f9f64` |
 | Registry contract | `0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B` |
-| Runtime release commit | `aef280f787187d8ccc65728ab8603aa69fdd162c` |
-| Runtime release tree | `f7f0bc5edb50dd9bc91597c46324b392dae9b49e` |
-| Frontend tree deployed to Vercel | `e45210e8d90e587d8a1b0a32e08d2c486c633d8f` |
+| Runtime release commit | `bdaa4cfffecd3f9600a90806b8f58a21defff1e8` |
+| Runtime release tree | `9a2416f7a52704ec178e7f616b1f6029091edf04` |
+| Frontend tree deployed to Vercel | `ceb807be22fe9ffe6609a493acba4172f0a760c6` |
+| Reviewer wallet fix commit | `19e74baca9ad8ff85677448b43b3246070ee55a7` |
+| GitHub Actions main CI | run `35431358963` — success |
+| Vercel production deployment | `dpl_39p94JZpXBU9BpvVzVnsvGtjiH1T` |
+
+The 19 September production acceptance verified generic injected EIP-1193 wallet connection on Bradbury chain ID `4221`, explicit wrong-network switching, unknown-chain add/switch handling for provider code `4902`, readable provider rejection including code `4001`, no MetaMask Snap dependency for connection, and no `[object Object]` error rendering.
 
 The production frontend reads consequential protocol state with `TransactionHashVariant.LATEST_FINAL`. A non-final transaction variant must never be presented as canonical MemorySeal state.
 
