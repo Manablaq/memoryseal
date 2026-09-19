@@ -5,6 +5,11 @@ import { testnetBradbury } from "genlayer-js/chains";
 import { TransactionStatus, type TransactionHash } from "genlayer-js/types";
 
 import { MEMORYSEAL_DEPLOYMENT } from "../../config/memoryseal";
+import {
+  formatMemorySealError,
+  getMemorySealErrorCode,
+  memorySealErrorHasCode,
+} from "./errors";
 import type { AddressHex } from "./types";
 import type { MemorySealWriteIntent } from "./write-intents";
 import type {
@@ -40,7 +45,41 @@ export const MEMORYSEAL_BROWSER_WALLET_POLICY = {
   automaticRetryAfterSubmission: false,
   automaticReplacementAfterSubmission: false,
   advancedLifecycleRpcUsed: false,
+  genericEip1193NetworkSwitching: true,
+  metaMaskSnapRequiredForConnection: false,
 } as const;
+
+export const MEMORYSEAL_BRADBURY_WALLET_CHAIN = {
+  chainId: `0x${MEMORYSEAL_DEPLOYMENT.network.chainId.toString(16)}`,
+  chainName: testnetBradbury.name,
+  nativeCurrency: {
+    name: testnetBradbury.nativeCurrency.name,
+    symbol: testnetBradbury.nativeCurrency.symbol,
+    decimals: testnetBradbury.nativeCurrency.decimals,
+  },
+  rpcUrls: [...testnetBradbury.rpcUrls.default.http],
+  blockExplorerUrls: [
+    testnetBradbury.blockExplorers?.default.url ??
+      MEMORYSEAL_DEPLOYMENT.network.explorerUrl,
+  ],
+} as const;
+
+export class MemorySealWalletProviderError extends Error {
+  readonly code: number | undefined;
+  readonly providerError: unknown;
+
+  constructor(stage: string, providerError: unknown) {
+    super(
+      `${stage}: ${formatMemorySealError(
+        providerError,
+        "Wallet provider returned an unreadable error.",
+      )}`,
+    );
+    this.name = "MemorySealWalletProviderError";
+    this.code = getMemorySealErrorCode(providerError);
+    this.providerError = providerError;
+  }
+}
 
 export function getInjectedMemorySealProvider(): MemorySealEip1193Provider {
   if (typeof window === "undefined") {
@@ -85,11 +124,95 @@ export function assertMemorySealWalletChainId(value: unknown): void {
     chainId = Number.parseInt(value.slice(2), 16);
   } else if (typeof value === "number" && Number.isSafeInteger(value)) {
     chainId = value;
-  } else if (typeof value === "bigint" && value <= BigInt(Number.MAX_SAFE_INTEGER)) {
+  } else if (
+    typeof value === "bigint" &&
+    value <= BigInt(Number.MAX_SAFE_INTEGER)
+  ) {
     chainId = Number(value);
   }
   if (chainId !== MEMORYSEAL_DEPLOYMENT.network.chainId) {
     throw new Error("Wallet is not connected to the exact Bradbury chain ID 4221.");
+  }
+}
+
+const readMemorySealWalletChainId = async (
+  provider: MemorySealEip1193Provider,
+  stage: string,
+): Promise<unknown> => {
+  try {
+    return await provider.request({ method: "eth_chainId" });
+  } catch (error) {
+    throw new MemorySealWalletProviderError(stage, error);
+  }
+};
+
+export async function ensureMemorySealBradburyNetwork(
+  provider: MemorySealEip1193Provider,
+): Promise<void> {
+  const currentChainId = await readMemorySealWalletChainId(
+    provider,
+    "Unable to read the wallet network",
+  );
+
+  try {
+    assertMemorySealWalletChainId(currentChainId);
+    return;
+  } catch {
+    // The injected wallet is on a different chain. Switch explicitly below.
+  }
+
+  try {
+    await provider.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: MEMORYSEAL_BRADBURY_WALLET_CHAIN.chainId }],
+    });
+  } catch (switchError) {
+    if (!memorySealErrorHasCode(switchError, 4902)) {
+      throw new MemorySealWalletProviderError(
+        "Bradbury network switch failed",
+        switchError,
+      );
+    }
+
+    try {
+      await provider.request({
+        method: "wallet_addEthereumChain",
+        params: [MEMORYSEAL_BRADBURY_WALLET_CHAIN],
+      });
+    } catch (addError) {
+      throw new MemorySealWalletProviderError(
+        "Adding Bradbury to the wallet failed",
+        addError,
+      );
+    }
+
+    try {
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: MEMORYSEAL_BRADBURY_WALLET_CHAIN.chainId }],
+      });
+    } catch (retrySwitchError) {
+      throw new MemorySealWalletProviderError(
+        "Bradbury network switch failed after adding the network",
+        retrySwitchError,
+      );
+    }
+  }
+
+  const verifiedChainId = await readMemorySealWalletChainId(
+    provider,
+    "Unable to verify the wallet network after switching to Bradbury",
+  );
+
+  try {
+    assertMemorySealWalletChainId(verifiedChainId);
+  } catch (error) {
+    throw new Error(
+      `Bradbury network verification failed: ${formatMemorySealError(
+        error,
+        "Wallet did not report the expected chain.",
+      )}`,
+    );
   }
 }
 
@@ -151,9 +274,18 @@ const snapshot = (receipt: {
 export async function connectMemorySealWallet(
   provider: MemorySealEip1193Provider = getInjectedMemorySealProvider(),
 ): Promise<MemorySealWalletSession> {
-  const accounts = await provider.request({
-    method: "eth_requestAccounts",
-  });
+  let accounts: unknown;
+
+  try {
+    accounts = await provider.request({
+      method: "eth_requestAccounts",
+    });
+  } catch (error) {
+    throw new MemorySealWalletProviderError(
+      "Wallet account request failed",
+      error,
+    );
+  }
 
   if (!Array.isArray(accounts) || accounts.length === 0) {
     throw new Error("Wallet returned no account.");
@@ -161,17 +293,13 @@ export async function connectMemorySealWallet(
 
   const address = assertAddress(accounts[0]);
 
+  await ensureMemorySealBradburyNetwork(provider);
+
   const client = createClient({
     chain: testnetBradbury,
     account: address,
     provider: provider as never,
   });
-
-  await client.connect("testnetBradbury");
-
-  assertMemorySealWalletChainId(
-    await provider.request({ method: "eth_chainId" }),
-  );
 
   const transport: MemorySealWriteTransport = {
     async submit(intent: MemorySealWriteIntent) {
@@ -179,7 +307,9 @@ export async function connectMemorySealWallet(
         intent.address !== MEMORYSEAL_DEPLOYMENT.contracts.main &&
         intent.address !== MEMORYSEAL_DEPLOYMENT.contracts.registry
       ) {
-        throw new Error("Write intent target is outside the frozen MemorySeal deployment.");
+        throw new Error(
+          "Write intent target is outside the frozen MemorySeal deployment.",
+        );
       }
 
       const hash = await client.writeContract({

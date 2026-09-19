@@ -9,6 +9,10 @@ import {
   type MemorySealWalletSession,
 } from "../lib/memoryseal/browser-wallet";
 import {
+  formatMemorySealError,
+  isMemorySealUserRejectedError,
+} from "../lib/memoryseal/errors";
+import {
   getMemorySealPendingTransactionContextIssue,
   getMemorySealPendingTransactionHash,
   getMemorySealPendingTransactionServerHash,
@@ -89,14 +93,13 @@ export function TransactionPanel() {
     } catch (error) {
       setSession(null);
       setState({
-        phase:
-          typeof error === "object" &&
-          error !== null &&
-          "code" in error &&
-          (error as { code?: unknown }).code === 4001
-            ? "user_rejected"
-            : "failed_before_submission",
-        error: error instanceof Error ? error.message : String(error),
+        phase: isMemorySealUserRejectedError(error)
+          ? "user_rejected"
+          : "failed_before_submission",
+        error: formatMemorySealError(
+          error,
+          "Wallet connection or Bradbury network setup failed.",
+        ),
       });
     }
   }
@@ -122,7 +125,7 @@ export function TransactionPanel() {
     try {
       intent = buildMemorySealWriteIntent(action, values);
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : String(error));
+      setFormError(formatMemorySealError(error, "Unable to prepare the transaction."));
       return;
     }
 
@@ -145,7 +148,7 @@ export function TransactionPanel() {
         setState,
       );
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : String(error));
+      setFormError(formatMemorySealError(error, "Unable to resume finalization."));
     }
   }
 
@@ -160,7 +163,7 @@ export function TransactionPanel() {
       await navigator.clipboard.writeText(hash);
       setCopyStatus("Recovery hash copied. It can be used on another browser or device.");
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : String(error));
+      setFormError(formatMemorySealError(error, "Unable to copy the recovery hash."));
     }
   }
 

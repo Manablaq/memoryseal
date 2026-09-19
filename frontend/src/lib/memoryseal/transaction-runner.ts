@@ -1,5 +1,9 @@
 import type { TransactionHash } from "genlayer-js/types";
 
+import {
+  formatMemorySealError,
+  isMemorySealUserRejectedError,
+} from "./errors";
 import type { MemorySealWriteIntent } from "./write-intents";
 import {
   finalStateFromSnapshot,
@@ -25,21 +29,6 @@ export type MemorySealStateListener = (
   state: MemorySealTransactionState,
 ) => void;
 
-const errorMessage = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error);
-
-const errorCode = (error: unknown): number | undefined => {
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    typeof (error as { code?: unknown }).code === "number"
-  ) {
-    return (error as { code: number }).code;
-  }
-  return undefined;
-};
-
 export async function submitAndTrackMemorySealIntent(
   intent: MemorySealWriteIntent,
   transport: MemorySealWriteTransport,
@@ -54,8 +43,13 @@ export async function submitAndTrackMemorySealIntent(
     emit({ phase: "submitted", txHash: hash });
   } catch (error) {
     const state: MemorySealTransactionState = {
-      phase: errorCode(error) === 4001 ? "user_rejected" : "failed_before_submission",
-      error: errorMessage(error),
+      phase: isMemorySealUserRejectedError(error)
+        ? "user_rejected"
+        : "failed_before_submission",
+      error: formatMemorySealError(
+        error,
+        "Wallet transaction submission failed.",
+      ),
     };
     emit(state);
     return state;
@@ -90,7 +84,10 @@ export async function submitAndTrackMemorySealIntent(
     const state: MemorySealTransactionState = {
       phase: "ambiguous_after_submission",
       txHash: hash,
-      error: errorMessage(error),
+      error: formatMemorySealError(
+        error,
+        "Transaction tracking failed after submission.",
+      ),
     };
     emit(state);
     return state;
@@ -116,7 +113,10 @@ export async function resumeMemorySealFinalization(
     const state: MemorySealTransactionState = {
       phase: "ambiguous_after_submission",
       txHash: hash,
-      error: errorMessage(error),
+      error: formatMemorySealError(
+        error,
+        "Finalization tracking failed.",
+      ),
     };
     emit(state);
     return state;

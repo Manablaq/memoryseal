@@ -146,6 +146,8 @@ test.describe("MemorySeal durable transaction recovery", () => {
     expect(requestsAfterConnect).not.toContain("eth_sendTransaction");
     expect(requestsAfterConnect).not.toContain("eth_sendRawTransaction");
     expect(requestsAfterConnect).not.toContain("wallet_invokeSnap");
+    expect(requestsAfterConnect).not.toContain("wallet_getSnaps");
+    expect(requestsAfterConnect).not.toContain("wallet_requestSnaps");
     expect(requestsAfterConnect).not.toContain("personal_sign");
     expect(
       requestsAfterConnect.some((method) =>
