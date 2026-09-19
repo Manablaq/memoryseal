@@ -87,6 +87,24 @@ The current production frontend is:
 
 `https://memoryseal-umber.vercel.app`
 
-The current verified runtime release source is commit:
+The current verified runtime release source is merge commit:
 
-`aef280f787187d8ccc65728ab8603aa69fdd162c`
+`bdaa4cfffecd3f9600a90806b8f58a21defff1e8`
+
+Current runtime tree:
+
+`9a2416f7a52704ec178e7f616b1f6029091edf04`
+
+Current frontend subtree:
+
+`ceb807be22fe9ffe6609a493acba4172f0a760c6`
+
+Current production deployment:
+
+`dpl_39p94JZpXBU9BpvVzVnsvGtjiH1T`
+
+The corresponding reviewer wallet fix commit is:
+
+`19e74baca9ad8ff85677448b43b3246070ee55a7`
+
+Historical machine-readable deployment/finality evidence remains immutable and continues to describe the contract-release workflow at the time each artifact was captured.

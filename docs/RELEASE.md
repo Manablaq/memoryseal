@@ -4,7 +4,7 @@ This document is the human-readable release index for the current public MemoryS
 
 ## Status
 
-**Production verified — 15 September 2026**
+**Production verified — 19 September 2026**
 
 The release consists of finalized Bradbury contracts plus a separately hardened and verified public frontend.
 
@@ -40,21 +40,30 @@ The evidence records the finalized Main source identity and verifies that finali
 
 `0xd5f0B44394810bBaEBd7cfd5D44b3B568895bd8B`
 
-## Frontend hardening lineage
+## Frontend hardening and wallet-fix lineage
 
 Verified hardening base:
 
 - commit `3256b7e8f59b6cb696d8f15fa781a6a689829caa`
 - tree `ff5ff7958b42a3e1a3070e47bc4181a0168ceca5`
 
-Production runtime release:
+Previous hardened runtime release:
 
 - commit `aef280f787187d8ccc65728ab8603aa69fdd162c`
 - tree `f7f0bc5edb50dd9bc91597c46324b392dae9b49e`
 - frontend subtree `e45210e8d90e587d8a1b0a32e08d2c486c633d8f`
 - release commit subject: `Harden MemorySeal recovery and release safeguards`
 
-The hardening release changed 28 reviewed files while leaving both canonical deployed contract blobs unchanged.
+Reviewer wallet fix:
+
+- fix commit `19e74baca9ad8ff85677448b43b3246070ee55a7`
+- merged through pull request `#1`
+- merge commit `bdaa4cfffecd3f9600a90806b8f58a21defff1e8`
+- current runtime tree `9a2416f7a52704ec178e7f616b1f6029091edf04`
+- current frontend subtree `ceb807be22fe9ffe6609a493acba4172f0a760c6`
+- merge commit subject: `Merge pull request #1 from Manablaq/fix/reviewer-wallet-bradbury`
+
+The wallet fix changed nine frontend/reviewer-readiness files and left both canonical deployed contract blobs byte-identical. It replaced the connection-time Snap-coupled path with standard injected EIP-1193 Bradbury network handling and readable structured provider errors.
 
 ## Production Vercel deployment
 
@@ -66,30 +75,36 @@ Existing Vercel project:
 
 Verified production deployment:
 
-- deployment ID: `dpl_DaExrMDmPEfT8qe4Cdq8qokgT9HQ`
-- immutable deployment URL: `https://memoryseal-3c5zr2n4x-mr-albert-s-projects.vercel.app`
+- deployment ID: `dpl_39p94JZpXBU9BpvVzVnsvGtjiH1T`
+- immutable deployment URL: `https://memoryseal-rg10dceur-mr-albert-s-projects.vercel.app`
 - canonical production alias: `https://memoryseal-umber.vercel.app`
 
 Deployment metadata binds:
 
-- release commit `aef280f787187d8ccc65728ab8603aa69fdd162c`;
-- release tree `f7f0bc5edb50dd9bc91597c46324b392dae9b49e`;
-- frontend tree `e45210e8d90e587d8a1b0a32e08d2c486c633d8f`; and
-- reviewed patch SHA-256 `3e693e9b0485ee7dea52811cdb0edcf6f8b14002ac300160b26fd182fcde40f1`.
+- release commit `bdaa4cfffecd3f9600a90806b8f58a21defff1e8`;
+- release tree `9a2416f7a52704ec178e7f616b1f6029091edf04`;
+- frontend tree `ceb807be22fe9ffe6609a493acba4172f0a760c6`;
+- reviewer wallet fix commit `19e74baca9ad8ff85677448b43b3246070ee55a7`; and
+- successful post-merge CI run `35431358963`.
 
 Independent post-deployment verification confirmed:
 
 - Vercel status `READY`;
 - `/` HTTP `200`;
 - `/app` HTTP `200`;
-- hardened production content present;
-- production security headers present;
-- canonical contract hashes unchanged; and
-- Git release identity preserved.
+- the canonical alias resolves to deployment `dpl_39p94JZpXBU9BpvVzVnsvGtjiH1T`;
+- production security headers are present and allow the Bradbury RPC;
+- a generic injected EIP-1193 wallet can switch from another chain to Bradbury `4221` / `0x107d`;
+- provider code `4902` triggers the canonical `wallet_addEthereumChain` metadata and a retry switch;
+- connection does not require `wallet_getSnaps` or `wallet_requestSnaps`;
+- a rejected network switch surfaces the actual provider message and code `4001`;
+- `[object Object]` is not rendered for structured provider failures;
+- canonical contract hashes are unchanged; and
+- Git release identity is preserved.
 
 ## CI
 
-The `main` push for runtime release commit `aef280f787187d8ccc65728ab8603aa69fdd162c` completed the GitHub Actions `CI` workflow successfully.
+The `main` push for runtime release merge commit `bdaa4cfffecd3f9600a90806b8f58a21defff1e8` completed GitHub Actions `CI` run `35431358963` successfully.
 
 The frontend CI gates include:
 
@@ -106,9 +121,11 @@ The frontend CI gates include:
 
 The release weaknesses were in browser/release boundaries rather than canonical contract semantics.
 
-Hardening covered areas including:
+Hardening and the reviewer wallet fix covered areas including:
 
-- Bradbury wallet-chain enforcement;
+- generic injected EIP-1193 Bradbury chain enforcement and add/switch handling;
+- readable structured wallet-provider errors;
+- removal of the MetaMask Snap requirement from normal injected-wallet connection;
 - canonical contract/write restrictions;
 - transaction journal context binding;
 - ambiguous-submission recovery without auto-resubmission;
